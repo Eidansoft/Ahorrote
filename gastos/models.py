@@ -6,6 +6,14 @@ from django.db import models
 # Create your models here.
 class Spending(models.Model):
     date = models.DateField()
-    concept = models.CharField(max_length=250)
-    amount = models.IntegerField(default=0)
+    concept = models.TextField()
+    amount = models.DecimalField(max_digits=7, decimal_places=2)
 
+    class Meta:
+        unique_together = (('concept', 'amount', 'date'),)
+
+    def __unicode__(self):
+        return '{} ({})'.format(self.date, self.amount)
+
+    def __str__(self):
+        return '{} ({})'.format(self.date, self.amount)
