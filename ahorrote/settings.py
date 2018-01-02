@@ -120,3 +120,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# my customization settings
+MODEL_TAG_NAME_MAX_LEN = 20
