@@ -8,3 +8,7 @@ class TagsForm(forms.Form):
         )
     )
     spending_ids = forms.CharField(max_length=256, widget=forms.HiddenInput())
+
+
+class SpendingConceptRegexSearchForm(forms.Form):
+    regex = forms.CharField()

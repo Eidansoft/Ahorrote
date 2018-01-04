@@ -1,8 +1,8 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 
-
 {% block title %}Add tags ...{% endblock %}
+
 {% block extrastyle %}
   <link href="{% static 'gastos/bootstrap.css' %}" rel="stylesheet">
   <link href="{% static 'gastos/bootstrap-tagsinput.css' %}" rel="stylesheet">
@@ -11,6 +11,7 @@
   <script type="text/javascript" src="{% static 'gastos/typeahead.bundle.js' %}"></script>
   <script type="text/javascript" src="{% static 'gastos/bootstrap-tagsinput.js' %}"></script>
 {% endblock %}
+  
 {% block content %}
 <h1>Add the following tags</h1>
   <p>

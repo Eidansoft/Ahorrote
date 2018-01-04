@@ -1,10 +1,14 @@
 from django.conf.urls import url
-from gastos import models, views
+from gastos import views
 
 
 # Add a new patern for each normal class in models file
 urlpatterns = [
-    url(r'^filter/by_concept/(?P<pattern>.+)$', views.filter_by_concept, name='filter_by_concept'),
-    url(r'^add_tags/(?P<ct>\d+)/(?P<ids>.+)$', views.add_tags, name='add_tags'),
-    url(r'^list_tags$', views.list_tags, name='list_tags')
+    url(r'^filter/by_concept/(?P<pattern>.+)$',
+        views.filter_by_concept, name='filter_by_concept'),
+    url(r'^add_tags/(?P<spending_ids>(\d{1,4},?)+)$',
+        views.add_tags_view, name='add_tags'),
+    url(r'^add_tags_with_regex/(?P<spending_id>\d{1,4})$',
+        views.add_tags_with_regex_view, name='add_tags_with_regex'),
+    url(r'^list_tags$', views.list_tags_json, name='list_tags')
 ]

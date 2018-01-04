@@ -1,0 +1,46 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Search spends by regex ...{% endblock %}
+
+{% block extrastyle %}
+  <script type="text/javascript" src="{% static 'gastos/jquery-3.2.1.js' %}"></script>
+{% endblock %}
+  
+{% block content %}
+<h1>Search spends by regex</h1>
+  <p>
+    {{ message }}
+  </p>   
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Search!</button>
+    <input type='hidden' id='spending_ids' name='spending_ids' value='{{ spending_ids }}'/>
+    <button type="button" id="btn_apply_tags">Apply tags...</button>
+  </form>
+
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Concept</th>
+      <th>Amount</th>
+    </tr>
+    {% for spend in spending_list %}
+    <tr>
+      <td>{{ spend.date }}</td>
+      <td>{{ spend.concept }}</td>
+      <td>{{ spend.amount }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+<script>
+  $('#btn_apply_tags').click(function() {
+  {% if spending_ids %}
+    window.location.href = "{% url 'add_tags' spending_ids %}";
+  {% else %}
+    alert('No valid regex (0 results).')
+  {% endif %}
+  });
+</script>
+{% endblock %}
