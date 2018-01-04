@@ -1,14 +1,43 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.http import HttpResponse
-import csv
-from gastos.models import Spending
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.contrib import messages
+from django.urls import reverse
+import csv, json
+from gastos.models import Spending, Tag
+from gastos.forms import TagsForm
 
 
 # Create your views here.
 def add_tags(request, ct, ids):
-    import ipdb; ipdb.set_trace(context=21)
-    return None
+    context = {}
+    context['form'] = TagsForm(initial={'spending_ids': ids})
+    if request.method == 'GET':
+        # main entry point
+        context['message'] = 'Write the tags to add.'
+
+    elif request.method == 'POST':
+        # validation and apply changes
+        form = TagsForm(request.POST)
+        if form.is_valid():
+            for spending_id in form.data['spending_ids'].split(','):
+                spend = Spending.objects.get(pk=spending_id)
+                for tag_name in form.data['tags'].split(','):
+                    tag, created = Tag.objects.get_or_create(name=tag_name)
+                    if not spend.tags.all().filter(name=tag_name):
+                        spend.tags.add(tag)
+            messages.add_message(request, messages.INFO, 'Tags applied!')
+            return HttpResponseRedirect('/admin/gastos/spending/')
+        else:
+            messages.add_message(request, messages.ERROR, 'No valid data.')
+
+    return render(request, 'gastos/add_tags.html', context)
+
+
+def list_tags(request):
+    tag_names = [t.name for t in Tag.objects.all()]
+    return HttpResponse(json.dumps(tag_names), content_type='text/json')
 
 
 def filter_by_concept(request, pattern):

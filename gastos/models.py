@@ -25,9 +25,9 @@ class Spending(models.Model):
         unique_together = (('concept', 'amount', 'date'),)
 
     def __unicode__(self):
-        return '{} ({})'.format(self.date, self.amount)
+        return '{} {} ({})'.format(self.date, self.concept[:20], self.amount)
 
     def __str__(self):
-        return '{} ({})'.format(self.date, self.amount)
+        return '{} {} ({})'.format(self.date, self.concept[:20], self.amount)
 
 

@@ -10,7 +10,6 @@ from .models import Spending, Tag
 # Register your models here.
 def add_tags(modeladmin, request, queryset):
     add_tags.short_description = "Add tags ..."
-
     selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
     ct = ContentType.objects.get_for_model(queryset.model)
     return HttpResponseRedirect(reverse('add_tags', args=(ct.pk, ",".join(selected))))

@@ -1,0 +1,47 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+
+{% block title %}Add tags ...{% endblock %}
+{% block extrastyle %}
+  <link href="{% static 'gastos/bootstrap.css' %}" rel="stylesheet">
+  <link href="{% static 'gastos/bootstrap-tagsinput.css' %}" rel="stylesheet">
+  <link href="{% static 'gastos/app.css' %}" rel="stylesheet">
+  <script type="text/javascript" src="{% static 'gastos/jquery-3.2.1.js' %}"></script>
+  <script type="text/javascript" src="{% static 'gastos/typeahead.bundle.js' %}"></script>
+  <script type="text/javascript" src="{% static 'gastos/bootstrap-tagsinput.js' %}"></script>
+{% endblock %}
+{% block content %}
+<h1>Add the following tags</h1>
+  <p>
+    {{ message }}
+  </p>   
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Apply!</button>
+  </form>
+<script>
+var tag_names = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+    url: '{% url "list_tags" %}',
+    filter: function(list) {
+      return $.map(list, function(tag_name) {
+        return { name: tag_name }; });
+    }
+  }
+});
+tag_names.initialize();
+
+$('.tag-selector').tagsinput({
+  typeaheadjs: {
+    name: 'tag_names',
+    displayKey: 'name',
+    valueKey: 'name',
+    source: tag_names.ttAdapter()
+  }
+});
+</script>
+{% endblock %}
