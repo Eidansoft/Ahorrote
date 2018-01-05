@@ -15,6 +15,7 @@ def add_tags(modeladmin, request, queryset):
 
 def add_tags_with_regex(modeladmin, request, queryset):
     add_tags_with_regex.short_description = "Add tags to similar spendings ..."
+    import ipdb; ipdb.set_trace(context=21)
     selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
     if len(selected) > 1:
         messages.add_message(
@@ -23,7 +24,7 @@ def add_tags_with_regex(modeladmin, request, queryset):
         )
         return HttpResponseRedirect('/admin/gastos/spending/')
     return HttpResponseRedirect(
-        reverse('add_tags_with_regex', args=(selected[0]))
+        reverse('add_tags_with_regex', args=(selected[0],))
     )
 
 

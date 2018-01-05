@@ -7,7 +7,7 @@ class TagsForm(forms.Form):
             attrs={'class': 'tag-selector', 'data-role': 'tagsinput'}
         )
     )
-    spending_ids = forms.CharField(max_length=256, widget=forms.HiddenInput())
+    spending_ids = forms.CharField(widget=forms.HiddenInput())
 
 
 class SpendingConceptRegexSearchForm(forms.Form):

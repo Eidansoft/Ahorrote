@@ -34,7 +34,7 @@
     </tr>
     {% endfor %}
   </table>
-<script>
+<script type="text/javascript">
   $('#btn_apply_tags').click(function() {
   {% if spending_ids %}
     window.location.href = "{% url 'add_tags' spending_ids %}";
