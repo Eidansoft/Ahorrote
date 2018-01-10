@@ -122,4 +122,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # my customization settings
+
+# usado para no repetir esto en el form y en el modelo
 MODEL_TAG_NAME_MAX_LEN = 20
+
