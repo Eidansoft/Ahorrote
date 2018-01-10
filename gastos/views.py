@@ -2,8 +2,11 @@
 from __future__ import unicode_literals
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.db.models import Sum
 from django.contrib import messages
-import csv, json
+from math import fabs
+import csv, time
+import simplejson as json
 from gastos.models import Spending, Tag
 from gastos.forms import TagsForm, SpendingConceptRegexSearchForm
 
@@ -92,6 +95,32 @@ def get_context_for_add_tags_with_regex(form, objs):
     context['form'] = form
     return context
 
+
+def graph_by_tags_view(request, tags_ids):
+    context = {}
+    ids = [int(id) for id in tags_ids.split(',')]
+    data = []
+    for month_number in range(1, 13):
+        spends = Spending.objects.filter(
+            date__month=month_number,
+            tags__id__in=ids
+        ).aggregate(Sum('amount'))
+        the_date = '2017-{0:02d}-01'.format(month_number)
+        pattern = '%Y-%m-%d'
+        timestamp = int(time.mktime(time.strptime(the_date, pattern))) * 1000
+        if not spends['amount__sum']:
+            data.append([timestamp, 0])
+        else:
+            data.append([timestamp, fabs(spends['amount__sum'])])
+
+    context['graph_data'] = json.dumps(data)
+    context['message'] = 'Displaying graph'
+    tag_names = [t.name for t in Tag.objects.filter(id__in=ids)]
+    context['tag_name'] = ' + '.join(tag_names)
+    return render(
+        request, 'gastos/graph_by_tags.html',
+        context
+    )
 
 
 def list_tags_json(request):

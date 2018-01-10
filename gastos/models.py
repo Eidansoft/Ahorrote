@@ -29,5 +29,3 @@ class Spending(models.Model):
 
     def __str__(self):
         return '{} {} ({})'.format(self.date, self.concept[:20], self.amount)
-
-

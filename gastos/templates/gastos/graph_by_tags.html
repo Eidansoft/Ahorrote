@@ -1,0 +1,71 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Graph by tag{% endblock %}
+
+{% block extrastyle %}
+  <script type="text/javascript" src="{% static 'gastos/jquery-3.2.1.js' %}"></script>
+  <script type="text/javascript" src="{% static 'gastos/jquery.flot.js' %}"></script>
+  <script type="text/javascript" src="{% static 'gastos/jquery.flot.time.js' %}"></script>
+{% endblock %}
+  
+{% block content %}
+<h1>Graph by tag</h1>
+  <p>
+    {{ message }}
+  </p>   
+  <div class="graph-container">
+    <div id="spends-graph" class="demo-placeholder" style='width: 850px;height: 450px;'></div>
+  </div>
+<script type="text/javascript">
+  $(function() {
+    var d1 = {{ graph_data | safe }};
+    $.plot("#spends-graph",
+      [
+        {
+          'label': '{{ tag_name }}',
+          'data': d1
+        }
+      ],
+      {
+        'series': {
+          'lines': {
+            'show': true
+          },
+          'points': {
+            'show': true
+          }
+        },
+        'grid': {
+          'hoverable': true,
+        },
+        'xaxis': {
+          mode: "time",
+          timeformat: "%b"
+        }
+      }
+    );
+  
+    $("<div id='tooltip'></div>").css({
+      position: "absolute",
+      display: "none",
+      border: "1px solid #fdd",
+      padding: "2px",
+      "background-color": "#fee",
+      opacity: 0.80
+    }).appendTo("body");
+  
+    $("#spends-graph").bind("plothover", function (event, pos, item) {
+      if (item) {
+        var timestamp = item.datapoint[0].toFixed(2);
+        var amount = item.datapoint[1].toFixed(2);
+        $("#tooltip").html(item.series.label + ": " + amount)
+          .css({top: item.pageY+5, left: item.pageX+5})
+          .fadeIn(200);
+      } else {
+        $("#tooltip").hide();
+      }
+    });
+  });
+</script>
+{% endblock %}
