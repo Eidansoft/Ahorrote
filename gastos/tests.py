@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from gastos.models import Spending, Tag
 from django.test import TestCase
+from django.urls import reverse
 from datetime import datetime, timedelta
 
 
@@ -35,9 +36,9 @@ class GastosTests(TestCase):
         }
 
         self.client.post(
-            '/gastos/add_tags/{}'.format(
+            reverse('add_tags', args=[
                 ','.join(map(str, self.spending_ids))
-            ),
+            ]),
             data=form
         )
 
@@ -52,7 +53,9 @@ class GastosTests(TestCase):
         }
 
         response = self.client.post(
-            '/gastos/add_tags_with_regex/{}'.format(self.spending_ids[1]),
+            reverse('add_tags_with_regex', args=[
+                self.spending_ids[1]
+            ]),
             data=form
         )
 
@@ -70,7 +73,9 @@ class GastosTests(TestCase):
         }
 
         response = self.client.post(
-            '/gastos/add_tags_with_regex/{}'.format(self.spending_ids[1]),
+            reverse('add_tags_with_regex', args=[
+                self.spending_ids[1]
+            ]),
             data=form
         )
 
