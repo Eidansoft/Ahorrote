@@ -30,13 +30,13 @@ class GastosTests(TestCase):
 
     def test_add_tags_to_spend(self):
         form = {
-                'tags': ','.join(self.tag_names),
-                'spending_ids': ','.join(str(v) for v in self.spending_ids)
-            }
+            'tags': ','.join(self.tag_names),
+            'spending_ids': ','.join(map(str, self.spending_ids))
+        }
 
-        response = self.client.post(
+        self.client.post(
             '/gastos/add_tags/{}'.format(
-                ','.join(str(v) for v in self.spending_ids)
+                ','.join(map(str, self.spending_ids))
             ),
             data=form
         )
@@ -46,4 +46,39 @@ class GastosTests(TestCase):
             tags = list(set(spend.tags.all()))
             self.assertEqual(len(tags), len(self.tag_names))
 
+    def test_add_tags_to_spend_with_regex_all(self):
+        form = {
+            'regex': '^.*$'
+        }
 
+        response = self.client.post(
+            '/gastos/add_tags_with_regex/{}'.format(self.spending_ids[1]),
+            data=form
+        )
+
+        # en el contexto devuelto deberia venir la lista con
+        # todos los ids de gastos
+        self.assertEqual(
+            response.context['spending_ids'],
+            ','.join(map(str, self.spending_ids))
+        )
+
+    def test_add_tags_to_spend_with_regex_one(self):
+        search_chars = '1'
+        form = {
+            'regex': '^.*{}.*$'.format(search_chars)
+        }
+
+        response = self.client.post(
+            '/gastos/add_tags_with_regex/{}'.format(self.spending_ids[1]),
+            data=form
+        )
+
+        # en el contexto devuelto deberian venir solo los buscados
+        self.assertEqual(
+            response.context['spending_ids'],
+            str(
+                Spending.objects.filter(
+                    concept__contains=search_chars).count()
+            )
+        )
